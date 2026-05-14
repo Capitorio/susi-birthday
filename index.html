@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Para Susi">
+    <link rel="apple-touch-icon" href="icono.png">
+
+    <title>¡Feliz Cumpleaños Susi!</title>
+    
+    <style>
+        /* Fondo dinámico animado */
+        body {
+            margin: 0;
+            padding: 20px 0; /* Agregamos un poco de espacio arriba y abajo */
+            min-height: 100vh; /* Permite que la página crezca si el video es muy alto */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a18cd1, #fbc2eb);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            font-family: 'Helvetica Neue', sans-serif;
+            text-align: center;
+            overflow-x: hidden; /* Evita que se mueva a los lados, pero permite bajar */
+            box-sizing: border-box;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Tarjeta con efecto "Vidrio Esmerilado" */
+        .card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 85%;
+            max-width: 350px;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.6s;
+            z-index: 10;
+        }
+
+        /* Efecto cuando se revela la sorpresa */
+        .card.abierta {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        h1 {
+            color: #ff2a5f;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.4);
+            transition: opacity 0.3s;
+        }
+
+        p {
+            color: #333;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        /* Botón mágico que palpita */
+        button {
+            margin-top: 25px;
+            padding: 18px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #ff4b68, #ff758c);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 75, 104, 0.5);
+            animation: pulse 2s infinite;
+            transition: transform 0.2s, opacity 0.3s;
+        }
+
+        button:active {
+            transform: scale(0.90);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 8px 20px rgba(255, 75, 104, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 30px rgba(255, 75, 104, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 8px 20px rgba(255, 75, 104, 0.5); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="tarjeta">
+        <h1 id="titulo">¡Feliz Cumpleaños <br>SUSIIIIIIIII! 🥳</h1>
+        <p id="mensaje">I have a surpriseeee</p>
+        <button id="btn-sorpresa"> Toca aquí </button>
+        
+        <!-- El video ahora está ADENTRO de la tarjeta para que sea un recuadro bonito -->
+        <video id="video-sorpresa" style="display: none; width: 100%; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" controls playsinline webkit-playsinline>
+            <source src="video.mp4" type="video/mp4">
+            Tu navegador no soporta videos.
+        </video>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        const boton = document.getElementById('btn-sorpresa');
+        const tarjeta = document.getElementById('tarjeta');
+        const titulo = document.getElementById('titulo');
+        const mensaje = document.getElementById('mensaje');
+        const video = document.getElementById('video-sorpresa'); 
+
+        boton.addEventListener('click', () => {
+            // 1. Desaparece el botón
+            boton.style.opacity = 0;
+            setTimeout(() => boton.style.display = 'none', 300);
+
+            // 2. Transforma la tarjeta
+            tarjeta.classList.add('abierta');
+
+            // 3. Animación de cambio de texto
+            titulo.style.opacity = 0;
+            mensaje.style.opacity = 0;
+            
+            setTimeout(() => {
+                titulo.innerHTML = "¡TE QUIERO MUCHÍSIMO! 💖";
+                mensaje.innerHTML = "¡Pasatela Increible! 🎂✨";
+                titulo.style.opacity = 1;
+                mensaje.style.opacity = 1;
+                
+                // Muestra el video como recuadro y le da play
+                video.style.display = 'block';
+                video.play();
+                
+            }, 300);
+// 4. SHOW DE CONFETI INFINITO
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            // Al usar setInterval sin un clearInterval, se ejecutará para siempre
+            setInterval(function() {
+                var particleCount = 40; // Bajé un poco la cantidad por disparo para que el iPhone no se trabe si la deja abierta mucho rato
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        });
+    </script>
+</body>
+</html>
